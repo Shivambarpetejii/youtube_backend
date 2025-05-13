@@ -34,11 +34,17 @@ const userSchema = new Schema({
         type:String,// cloudinary url
         
     },
+    
     watchHistory:[
        { type:mongoose.Schema.Types.ObjectId,
          ref:"video"
        }
     ] ,
+    role: {
+        type: String,
+        enum: ["user", "admin"], 
+        default: "user", 
+    },
     password:{
         type  :String,
         required:[true, "password is required"]

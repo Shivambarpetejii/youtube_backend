@@ -2,10 +2,12 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
+import swaggerDocs from "./swagger/swaggerConfig.js"
+
 const app = express();
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin:'http://localhost:5173',
     credentials: true,
   })
 );
@@ -22,6 +24,8 @@ import userRouter from "./routes/user.routes.js"
 
 //routes declaration
 app.use("/api/v1/users",userRouter);
+
+swaggerDocs(app);
 
 
 
