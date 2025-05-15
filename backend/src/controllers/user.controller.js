@@ -5,25 +5,6 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
 
-//otp
-import crypto from "crypto";
-import { sendOtpToEmail } from "../utils/otpService.js"
-let otpStore = {};
-
-const generateOtp = () => {
-    return crypto.randomInt(100000, 999999); // Generates a 6-digit OTP
-  };
-
-  const sendOtp = async (userEmail) => {
-    const otp = generateOtp();
-    otpStore[userEmail] = otp;
-   
-    
-    // Store OTP temporarily (you may want to use a more secure method)
-  
-    // Send OTP to user email (you can implement your own email service)
-    await sendOtpToEmail(userEmail, otp);
-  };
 
 const generateAccessAndRefereshTokens = async (userId)=>{
     try {
@@ -158,9 +139,6 @@ const loginUser = asyncHandler(async(req,res)=>{
         throw new ApiError(404, "user does not exist")
     }
     //password check 
-    
-    console.log(user);
-    
     const isPasswordValid = await user.isPasswordCorrect(password)
     if(!isPasswordValid)
         {
@@ -169,8 +147,6 @@ const loginUser = asyncHandler(async(req,res)=>{
     //acsses and refresh token 
 
    const {accessToken,refreshToken} = await generateAccessAndRefereshTokens(user._id);
-
-   
 
     // send cookois
 
@@ -280,68 +256,24 @@ const refereshAccessToken = asyncHandler(async(req,res)=>{
 })
 
 
-// Change password logic with OTP verification
-const changeCurrentPassword = asyncHandler(async (req, res) => {
-    const { oldPassword, newPassword, otp } = req.body;
-    
-    // 1. Check if OTP is provided
-    if (!otp) {
-      throw new ApiError(400, "OTP is required to change the password");
-    }
-  
-    // 2. Validate OTP
-    const user = await User.findById(req.user?.id);
-    if (!user) {
-      throw new ApiError(400, "User not found");
-    }
-    
-    
-   
-    
-    
-    const storedOtp = otpStore[user.email];
-    
-    
-    if (storedOtp != otp) {
-      throw new ApiError(400, "Invalid OTP");
-    }
-  
-    // 3. OTP verification passed, now proceed with password change
-  
-    // Check old password
-    const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
-    if (!isPasswordCorrect) {
-      throw new ApiError(400, "Invalid old password");
-    }
-  
-    // Set new password and save
+const changeCurrentPassword = asyncHandler(async(req,res)=>{
+    const {oldPassword, newPassword} = req.body
+   const user =  await User.findById(req.user?.id)
+   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword)
+   if(!isPasswordCorrect)
+   {
+    throw new ApiError(400,"Invalid old password")
+
+   }
     user.password = newPassword;
-    await user.save({ validateBeforeSave: false });
-  
-    // Clear OTP after successful password change
 
-    delete otpStore[user.email];
-  
-    // Send response
-    return res.status(200).json(new ApiResponse(200, {}, "Password changed successfully"));
-  });
-  
-  // Generate OTP and send via email (usually called from a different endpoint)
-const requestOtpForPasswordChange = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user?.id);
-    if (!user) {
-      throw new ApiError(400, "User not found");
-    }
-  
-    // Generate and send OTP
-    console.log("sen ho rha h =="+user.email);
+    await user.save({validateBeforeSave:false})
 
-    
-    await sendOtp(user.email);
-  
-    // Respond with success message
-    return res.status(200).json(new ApiResponse(200, {}, "OTP sent to your email"));
-  });
+    return res.status(200).json(new ApiResponse(200,{},"password change succfully"))
+
+})
+
+
 
 
 const getCurrentUser = asyncHandler(async (req, res) => {
@@ -358,7 +290,5 @@ export {
     logoutUser,
     refereshAccessToken,
     getCurrentUser,
-    changeCurrentPassword,
-    requestOtpForPasswordChange,
 
 };
