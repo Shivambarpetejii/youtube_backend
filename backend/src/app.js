@@ -1,6 +1,12 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import passport from "./config/passport.js";
+
+import swaggerDocs from "./swagger/swaggerConfig.js"
+
+
+
 
 import swaggerDocs from "./swagger/swaggerConfig.js"
 
@@ -15,6 +21,7 @@ app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
+app.use(passport.initialize());
 
 // routes import 
 import userRouter from "./routes/user.routes.js"

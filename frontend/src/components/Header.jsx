@@ -21,6 +21,12 @@ const Header = () => {
                   <Link to="/profile" className="hover:text-gray-300">Profile</Link>
                 </li>
                 <li>
+<<<<<<< HEAD
+=======
+                  <Link to="/change-password" className="hover:text-gray-300">Change Password</Link>
+                </li>
+                <li>
+>>>>>>> Resolved merge conflicts
                   <button 
                     onClick={logout} 
                     className="hover:text-gray-300"

@@ -44,15 +44,26 @@ const userSchema = new Schema({
         type: String,
         enum: ["user", "admin"], 
         default: "user", 
+<<<<<<< HEAD:src/models/user.model.js
     },
     password:{
         type  :String,
         required:[true, "password is required"]
+=======
+>>>>>>> Resolved merge conflicts:backend/src/models/user.model.js
     },
+    password: {
+        type: String,
+        required: function () {
+          return !this.googleId; // Password is only required if there is no googleId
+        },
+      },
     refreshToken:{
         type:String,
 
-    }
+    },
+    googleId: { type: String, unique: true, sparse: true },
+
     
 
 },{timestamps:true})
@@ -66,10 +77,14 @@ userSchema.pre("save",async function(next){
 })
 
 userSchema.methods.isPasswordCorrect = async function (password) {
+    console.log("yha tk aaya hi nhi");
+    console.log(this.password);
+    
     
     return await bcrypt.compare(password, this.password)
     
 }
+
 
 userSchema.methods.generateAccessToken = function(){
     return jwt.sign(
@@ -79,6 +94,8 @@ userSchema.methods.generateAccessToken = function(){
             username:this.username,
             fullName:this.fullName
         },
+  
+        
         process.env.ACCESS_TOKEN_SECRET,
         {
             expiresIn:process.env.ACCESS_TOKEN_EXPIRY

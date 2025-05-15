@@ -9,6 +9,11 @@ import Register from './pages/Register';
 import Profile from './pages/Profile';
 import AdminDashbord from './pages/admin/AdminDashbord';
 import UserDeshbord from './pages/user/UserDashbord';
+<<<<<<< HEAD
+=======
+import AuthSuccess from './pages/AuthSuccess';
+import ChangePassword from './pages/ChangePassword';
+>>>>>>> Resolved merge conflicts
 
 function App() {
   return (
@@ -19,6 +24,11 @@ function App() {
           <main className="flex-grow">
             <Routes>
               <Route path="/" element={<Home />} />
+<<<<<<< HEAD
+=======
+              <Route path="/user" element={<UserDeshbord/>} />
+              
+>>>>>>> Resolved merge conflicts
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route 
@@ -29,7 +39,20 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
+<<<<<<< HEAD
               
+=======
+              <Route 
+                path="/change-password" 
+                element={
+                  <ProtectedRoute>
+                    <ChangePassword />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route path="/auth/success" element={<AuthSuccess/>} />
+
+>>>>>>> Resolved merge conflicts
             </Routes>
             
           </main>
